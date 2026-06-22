@@ -1,0 +1,83 @@
+{
+  "dataset_id": "golden_v1",
+  "requirements": [
+    {
+      "id": "R1",
+      "type": "functional",
+      "text": "Users must sign in using the national health identity account.",
+      "source": "Email from Clinical Operations"
+    },
+    {
+      "id": "R2",
+      "type": "functional",
+      "text": "System must support three roles: patient, clinician, admin.",
+      "source": "Joint meeting notes"
+    },
+    {
+      "id": "R3",
+      "type": "functional",
+      "text": "Clinicians must be able to create and update triage records with severity, symptoms, and priority.",
+      "source": "Joint meeting notes"
+    },
+    {
+      "id": "R4",
+      "type": "functional",
+      "text": "Patients must be able to request, reschedule, and cancel appointments.",
+      "source": "Joint meeting notes"
+    },
+    {
+      "id": "R5",
+      "type": "functional",
+      "text": "Appointment confirmations must include a reference code.",
+      "source": "Joint meeting notes"
+    },
+    {
+      "id": "R6",
+      "type": "functional",
+      "text": "Appointment confirmation and cancellation notifications must be delivered within 10 minutes.",
+      "source": "Joint meeting notes"
+    },
+    {
+      "id": "R7",
+      "type": "functional",
+      "text": "Admin dashboard must include daily appointment volume and no-show rate.",
+      "source": "Joint meeting notes"
+    },
+    {
+      "id": "R8",
+      "type": "non_functional",
+      "text": "System must support 300 concurrent users during peak booking windows.",
+      "source": "Slack thread with IT Ops"
+    },
+    {
+      "id": "R9",
+      "type": "non_functional",
+      "text": "Critical pages must remain under 2.5 seconds at p95.",
+      "source": "Slack thread with IT Ops"
+    },
+    {
+      "id": "R10",
+      "type": "non_functional",
+      "text": "Monthly availability target must be at least 99.9%.",
+      "source": "Slack thread with IT Ops"
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "C1",
+      "statement_a": "During network outages, emergency triage and patient lookup must still operate offline.",
+      "statement_b": "All user sessions must be validated against central cloud IAM in real time; offline access is not allowed.",
+      "source_a": "Emergency preparedness requirement",
+      "source_b": "Security architecture response",
+      "category": "authentication"
+    },
+    {
+      "id": "C2",
+      "statement_a": "Keep immutable clinical audit logs for 7 years.",
+      "statement_b": "Delete patient interaction logs after 30 days.",
+      "source_a": "Compliance memo",
+      "source_b": "Privacy officer note",
+      "category": "data_retention"
+    }
+  ]
+}

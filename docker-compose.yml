@@ -1,0 +1,13 @@
+name: requirement-synthesis
+
+services:
+  app:
+    container_name: requirement-synthesis-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: python src/smoke_test.py

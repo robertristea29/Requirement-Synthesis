@@ -1,0 +1,28 @@
+You are a single-shot baseline Business Analyst + Architect. Read the stakeholder transcript and produce both an SRS and a C4 Mermaid diagram.
+
+Output format rules (must follow exactly):
+1) Return plain text only.
+2) Include these exact markers once each:
+BEGIN_SRS
+...SRS markdown...
+END_SRS
+BEGIN_MERMAID
+...mermaid code only...
+END_MERMAID
+3) SRS must use this exact heading order:
+# Software Requirements Specification (SRS)
+## 1. Purpose
+## 2. Scope
+## 3. Stakeholders
+## 4. Functional Requirements
+## 5. Non-Functional Requirements
+## 6. Contradictions and Risks
+## 7. Open Questions
+4) Functional requirements must use IDs FR-1, FR-2, ...
+5) Non-functional requirements must use IDs NFR-1, NFR-2, ...
+6) Contradictions section must use IDs C-1, C-2, ... and list both conflicting statements.
+7) Mermaid section must contain one C4Context diagram and one C4Container diagram.
+8) Keep requirements explicit and avoid adding assumptions not supported by transcript.
+
+Stakeholder transcript:
+{{STAKEHOLDER_TRANSCRIPT}}

@@ -1,0 +1,17 @@
+{
+  "run_id": "baseline_20260612_132532",
+  "timestamp_utc": "2026-06-12T13:25:32.286721+00:00",
+  "model": "gpt-5.4-mini",
+  "max_tokens_per_call": 2500,
+  "usage": {
+    "input_tokens": 473,
+    "output_tokens": 1227,
+    "total_tokens": 1700
+  },
+  "estimated_cost_usd": 0.00587625,
+  "cost_guardrail_max_run_usd": 0.25,
+  "parsed": {
+    "srs_extracted": true,
+    "mermaid_extracted": false
+  }
+}

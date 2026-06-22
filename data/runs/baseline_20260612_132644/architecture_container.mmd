@@ -1,0 +1,26 @@
+C4Container
+title Campus Event Booking Platform - Containers
+Person(student2, "Student", "Books events and receives QR confirmations")
+Person(organizer2, "Organizer", "Creates and manages events")
+Person(admin2, "Admin", "Views dashboard")
+System_Boundary(s1, "Campus Event Booking Platform") {
+  Container(webApp, "Web Application", "Browser UI", "Student, organizer, and admin user interface")
+  Container(appServer, "Application Server", "Backend API", "Business logic, role-based access, booking, admin reporting")
+  ContainerDb(eventDb, "Event Database", "Relational DB", "Stores events, bookings, users, and transaction data")
+  Container(auditLog, "Audit Log Store", "Append-only storage", "Immutable audit logs retained for 7 years")
+  Container(queue, "Notification Queue", "Message queue", "Buffers booking and cancellation notifications")
+}
+System_Ext(universitySSO2, "University SSO", "Authentication provider")
+System_Ext(paymentGateway2, "Payment Services", "Supports iDEAL and credit card")
+System_Ext(emailService2, "Email Delivery Service", "Sends booking and cancellation emails")
+Rel(student2, webApp, "Uses")
+Rel(organizer2, webApp, "Uses")
+Rel(admin2, webApp, "Uses")
+Rel(webApp, appServer, "Calls")
+Rel(appServer, universitySSO2, "Authenticates users via SSO")
+Rel(appServer, eventDb, "Reads/writes")
+Rel(appServer, paymentGateway2, "Processes payments")
+Rel(appServer, queue, "Enqueues notification jobs")
+Rel(queue, emailService2, "Delivers emails")
+Rel(appServer, auditLog, "Writes immutable audit entries")
+Rel(admin2, webApp, "Views sales and attendance dashboard")

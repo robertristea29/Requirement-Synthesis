@@ -1,0 +1,17 @@
+C4Context
+title Campus Event Booking Platform - Context
+Person(student, "Student", "Books events and receives QR confirmations")
+Person(organizer, "Organizer", "Creates and manages events")
+Person(admin, "Admin", "Views daily sales and attendance dashboard")
+System(campusApp, "Campus Event Booking Platform", "University SSO event booking platform")
+System_Ext(universitySSO, "University SSO", "Authentication provider")
+System_Ext(paymentGateway, "Payment Services", "Supports iDEAL and credit card")
+System_Ext(emailService, "Email Delivery Service", "Sends booking and cancellation emails")
+System_Ext(auditStore, "Immutable Audit Log Store", "Retains audit logs for 7 years")
+Rel(student, campusApp, "Signs in, books/cancels tickets, receives QR code")
+Rel(organizer, campusApp, "Creates events")
+Rel(admin, campusApp, "Views dashboard")
+Rel(campusApp, universitySSO, "Authenticates users via SSO")
+Rel(campusApp, paymentGateway, "Processes payments")
+Rel(campusApp, emailService, "Sends notifications")
+Rel(campusApp, auditStore, "Writes immutable audit logs")

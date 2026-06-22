@@ -1,0 +1,44 @@
+C4Container
+title Hospital Appointment and Triage Coordination System - Containers
+Person(patient, "Patient", "Requests, reschedules, and cancels appointments")
+Person(clinician, "Clinician", "Creates and updates triage records")
+Person(admin, "Admin", "Views operational dashboard")
+System_Ext(nationalHealthId, "National Health Identity", "Authentication provider")
+System_Ext(ehr, "Hospital EHR System", "Receives appointment status updates")
+System_Ext(iam, "Central Cloud IAM", "Validates user sessions in real time")
+
+System_Boundary(sys, "Hospital Appointment and Triage Coordination System") {
+  Container(webApp, "Web Application", "Web App", "Patient, clinician, and admin user interface")
+  Container(authService, "Authentication and Session Validation", "Service", "Handles national health identity login and real-time IAM validation")
+  Container(appointmentService, "Appointment Service", "Service", "Appointment request, reschedule, cancel, confirmation reference code")
+  Container(triageService, "Triage Service", "Service", "Create and update triage records with severity, symptoms, and priority")
+  Container(notificationService, "Notification Service", "Service", "Sends confirmation and cancellation notifications")
+  Container(reportingService, "Reporting Dashboard Service", "Service", "Shows daily appointment volume and no-show rate")
+  Container(integrationService, "EHR Integration Service", "Service", "Syncs appointment status updates to the hospital EHR")
+  Container(auditLogService, "Clinical Audit Log Service", "Service", "Stores immutable clinical audit logs for 7 years")
+  ContainerDb(transactionStore, "Operational Data Store", "Database", "Appointments, triage records, and operational data")
+  ContainerDb(auditStore, "Immutable Audit Log Store", "Database", "7-year immutable clinical audit logs")
+}
+
+Rel(patient, webApp, "Uses")
+Rel(clinician, webApp, "Uses")
+Rel(admin, webApp, "Uses")
+
+Rel(webApp, authService, "Authenticates and validates session via")
+Rel(authService, nationalHealthId, "Uses")
+Rel(authService, iam, "Validates in real time against")
+
+Rel(webApp, appointmentService, "Requests, reschedules, cancels")
+Rel(webApp, triageService, "Creates, updates triage records")
+Rel(webApp, reportingService, "Views dashboard")
+Rel(appointmentService, notificationService, "Triggers notifications")
+Rel(appointmentService, integrationService, "Publishes appointment status updates")
+Rel(appointmentService, transactionStore, "Reads/writes")
+Rel(triageService, transactionStore, "Reads/writes")
+Rel(reportingService, transactionStore, "Reads")
+Rel(integrationService, ehr, "Syncs appointment status updates to")
+Rel(auditLogService, auditStore, "Writes immutable logs to")
+Rel(appointmentService, auditLogService, "Logs significant actions")
+Rel(triageService, auditLogService, "Logs significant actions")
+Rel(notificationService, auditLogService, "Logs notification events")
+ENDC4Container

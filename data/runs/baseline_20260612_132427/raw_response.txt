@@ -1,0 +1,197 @@
+BEGIN_SRS
+# Software Requirements Specification (SRS): Campus Event Booking Platform
+
+## 1. Introduction
+
+### 1.1 Purpose
+This document specifies requirements for a Campus Event Booking platform for a September launch.
+
+### 1.2 Scope
+The platform shall allow university students to sign in using university SSO, browse and book campus events, receive QR code confirmations, and support organizers and admins with event management and reporting.
+
+### 1.3 Stakeholders
+- Product Manager
+- Operations
+- Organizers
+- Attendees/Students
+- Admin
+- Compliance
+- Security
+- IT Architecture
+- Privacy Officer
+- Finance
+
+### 1.4 Key Constraints and Conflicts
+The transcript contains a direct conflict:
+- Security request: the app must be fully offline-capable for all core operations, including login and ticket validation.
+- IT architecture policy: every app startup must perform live cloud authentication before any feature unlocks; no cached/offline auth is allowed.
+
+This conflict must be resolved before implementation.  
+Other retained requirements also conflict:
+- Compliance/Finance: immutable audit logs retained for 7 years.
+- Privacy officer: delete all user activity logs after 30 days.
+
+The 7-year audit log retention requirement is explicitly reaffirmed by Finance and must be honored. The 30-day deletion requirement conflicts with that requirement for any logs that are considered audit logs or user activity logs used for audit/dispute purposes; this must be clarified by stakeholders.
+
+---
+
+## 2. User Roles
+
+### 2.1 Attendee
+- Signs in with university SSO.
+- Books tickets for events.
+- Receives QR code confirmation.
+- Cancels bookings.
+
+### 2.2 Organizer
+- Creates events.
+- Manages event details and capacity.
+
+### 2.3 Admin
+- Views dashboard with daily sales and attendance rates.
+
+---
+
+## 3. Functional Requirements
+
+### FR-1 University SSO Sign-in
+The system shall support sign-in using university SSO only.
+
+### FR-2 Role-Based Access
+The system shall support the roles:
+- attendee
+- organizer
+- admin
+
+### FR-3 Event Creation
+The system shall allow organizers to create events with the following fields:
+- title
+- date/time
+- location
+- capacity
+- category
+
+### FR-4 Event Booking
+The system shall allow attendees to book tickets for events.
+
+### FR-5 QR Code Confirmation
+The system shall generate and provide a QR code confirmation for each successful booking.
+
+### FR-6 Payment Methods
+The system shall support the following payment methods for launch:
+- iDEAL
+- credit card
+
+### FR-7 Booking Cancellation
+The system shall allow attendees to cancel bookings.
+
+### FR-8 Notification Emails
+The system shall send booking and cancellation emails within 5 minutes of the relevant action.
+
+### FR-9 Admin Dashboard
+The system shall provide an admin dashboard showing:
+- daily sales
+- attendance rates
+
+### FR-10 Audit Logging
+The system shall maintain immutable audit logs.
+
+### FR-11 Audit Log Retention
+The system shall retain audit logs for 7 years.
+
+### FR-12 Offline Capability Requirement
+The system shall support offline capability for all core operations, including login and ticket validation, as requested by Security.
+
+### FR-13 Live Cloud Authentication
+The system shall perform live cloud authentication on every app startup before unlocking any feature, as required by IT architecture policy.
+
+---
+
+## 4. Non-Functional Requirements
+
+### NFR-1 Performance
+The system shall support 500 concurrent users during peak ticket drops.
+
+### NFR-2 Page Response Time
+Core pages shall have a p95 response time of under 2 seconds.
+
+### NFR-3 Availability
+The system shall achieve at least 99.5% monthly uptime.
+
+### NFR-4 Auditability
+Audit logs shall be immutable and retained for 7 years.
+
+### NFR-5 Security/Access Control
+The platform shall restrict access according to user role and university SSO authentication.
+
+### NFR-6 Notification Timeliness
+Booking and cancellation emails shall be delivered within 5 minutes.
+
+---
+
+## 5. Data Requirements
+
+### 5.1 Event Data
+Each event shall store:
+- title
+- date/time
+- location
+- capacity
+- category
+
+### 5.2 Booking Data
+Each booking shall store:
+- attendee identity
+- event reference
+- payment status
+- QR code confirmation reference
+- cancellation status where applicable
+
+### 5.3 Audit Data
+Audit logs shall be immutable and retained for 7 years.
+
+---
+
+## 6. Business Rules
+- University SSO is the only allowed sign-in method.
+- Booking payments at launch are limited to iDEAL and credit card.
+- Booking and cancellation email notifications must be sent within 5 minutes.
+- Audit logs must remain immutable for 7 years.
+- Conflicting retention requests for user activity logs must be resolved before release.
+- Conflicting offline/login requirements must be resolved before release.
+
+---
+
+## 7. Acceptance Criteria
+- Students can sign in using university SSO only.
+- Organizers can create events with all required fields.
+- Attendees can book tickets and receive QR code confirmations.
+- The platform accepts iDEAL and credit card payments at launch.
+- Booking and cancellation emails are sent within 5 minutes.
+- Admin can view daily sales and attendance rates.
+- Audit logs are immutable and retained for 7 years.
+- The system meets the stated performance and uptime targets.
+- Open conflicts regarding offline capability, live authentication, and log retention are explicitly resolved prior to implementation.
+
+END_SRS
+BEGIN_MERMAID
+C4Context
+title Campus Event Booking Platform - System Context
+Person(attendee, "Attendee", "Books tickets and receives QR confirmations")
+Person(organizer, "Organizer", "Creates and manages campus events")
+Person(admin, "Admin", "Views sales and attendance dashboards")
+
+System(eventPlatform, "Campus Event Booking Platform", "University SSO-based event booking platform for students")
+
+System_Ext(universitySSO, "University SSO", "Authentication provider")
+System_Ext(paymentGateway, "Payment Provider(s)", "iDEAL and credit card processing")
+System_Ext(emailService, "Email Service", "Sends booking and cancellation emails")
+System_Ext(qrScanner, "QR Ticket Validation Tool", "Validates QR code confirmations")
+System_Ext(auditStore, "Audit Log Store", "Immutable 7-year audit retention")
+
+Rel(attendee, eventPlatform, "Signs in, books/cancels tickets, receives QR confirmation")
+Rel(organizer, eventPlatform, "Creates events")
+Rel(admin, eventPlatform, "Views dashboard")
+Rel(eventPlatform, universitySSO, "Authenticates users via SSO")
+Rel(eventPlatform, paymentGateway, "Processes payments")
+Rel(eventPlatform, emailService, "Sends booking

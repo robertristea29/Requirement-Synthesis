@@ -1,0 +1,26 @@
+# Keep secrets and local clutter out of Docker build context
+.env
+.env.*
+
+# Git and editor metadata
+.git
+.gitignore
+.vscode
+.idea
+
+# Python caches and local artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Project outputs
+outputs/
+reports/
+artifacts/
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db

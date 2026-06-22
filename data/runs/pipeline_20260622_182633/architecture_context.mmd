@@ -1,0 +1,19 @@
+C4Context
+title Hospital Appointment and Triage Coordination System - System Context
+
+Person(patient, "Patient", "Requests, reschedules, and cancels appointments; logs in using national health identity account")
+Person(clinician, "Clinician", "Creates and updates triage records")
+Person(adminUser, "Admin User", "Views administrative reporting")
+System(hospitalSystem, "Hospital Appointment and Triage Coordination System", "Manages appointments, triage records, notifications, reporting, offline emergency triage/patient lookup, and syncs appointment status to hospital EHR")
+System_Ext(nationalHealthIdentity, "National Health Identity Account", "Identity-based login for patients")
+System_Ext(centralCloudIAM, "Central Cloud IAM", "Validates all user sessions in real time")
+System_Ext(hospitalEHR, "Hospital EHR System", "Receives appointment status updates")
+System_Ext(notificationService, "Notification Delivery", "Sends appointment confirmation and cancellation notifications")
+
+Rel(patient, hospitalSystem, "Requests, reschedules, cancels appointments; uses patient lookup")
+Rel(clinician, hospitalSystem, "Creates and updates triage records")
+Rel(adminUser, hospitalSystem, "Views daily appointment volume and no-show rate")
+Rel(hospitalSystem, nationalHealthIdentity, "Authenticates patient login")
+Rel(hospitalSystem, centralCloudIAM, "Validates user sessions in real time")
+Rel(hospitalSystem, hospitalEHR, "Synchronizes appointment status updates")
+Rel(hospitalSystem, notificationService, "Sends confirmations and cancellations")

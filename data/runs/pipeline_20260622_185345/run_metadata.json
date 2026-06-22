@@ -1,0 +1,40 @@
+{
+  "run_id": "pipeline_20260622_185345",
+  "timestamp_utc": "2026-06-22T18:53:45.116586+00:00",
+  "model": "gpt-5.4-mini",
+  "agent_usage": [
+    {
+      "agent": "analyst",
+      "input_tokens": 597,
+      "output_tokens": 793,
+      "total_tokens": 1390
+    },
+    {
+      "agent": "critic",
+      "input_tokens": 1296,
+      "output_tokens": 998,
+      "total_tokens": 2294
+    },
+    {
+      "agent": "architect",
+      "input_tokens": 999,
+      "output_tokens": 767,
+      "total_tokens": 1766
+    }
+  ],
+  "estimated_cost_usd": 0.013680000000000001,
+  "cost_guardrail_max_run_usd": 0.25,
+  "parsed": {
+    "srs_extracted": true,
+    "critique_extracted": true,
+    "context_diagram_extracted": true,
+    "container_diagram_extracted": false
+  },
+  "srs_spec_validation": {
+    "passed": true,
+    "missing_headings": [],
+    "fr_count": 21,
+    "nfr_count": 6,
+    "contradiction_count": 2
+  }
+}

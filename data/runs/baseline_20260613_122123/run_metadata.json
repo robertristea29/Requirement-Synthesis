@@ -1,0 +1,26 @@
+{
+  "run_id": "baseline_20260613_122123",
+  "timestamp_utc": "2026-06-13T12:21:23.675980+00:00",
+  "model": "gpt-5.4-mini",
+  "max_tokens_per_call": 2500,
+  "usage": {
+    "input_tokens": 611,
+    "output_tokens": 1849,
+    "total_tokens": 2460
+  },
+  "estimated_cost_usd": 0.00877875,
+  "cost_guardrail_max_run_usd": 0.25,
+  "parsed": {
+    "srs_extracted": true,
+    "mermaid_extracted": true,
+    "context_diagram_extracted": true,
+    "container_diagram_extracted": true
+  },
+  "srs_spec_validation": {
+    "passed": true,
+    "missing_headings": [],
+    "fr_count": 19,
+    "nfr_count": 6,
+    "contradiction_count": 2
+  }
+}

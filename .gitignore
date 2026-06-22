@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual envs (ignored even if you use Docker)
+.venv/
+venv/
+env/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+secrets/
+
+# Logs and runtime artifacts
+logs/
+*.log
+*.pid
+
+# Build and package artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker/local overrides
+docker-compose.override.yml
+
+# Project-generated outputs (keep examples, ignore run artifacts)
+outputs/
+reports/
+artifacts/
