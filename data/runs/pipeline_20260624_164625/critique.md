@@ -1,0 +1,27 @@
+## Missing Requirements
+- The SRS does not capture the performance target that “**Critical pages should stay under 2.5 seconds p95**” with any page-specific scope or measurement context beyond a generic NFR. It should identify which pages are critical and under what load/test conditions this is measured.
+- The SRS does not state the uptime requirement in an operationally testable way. The transcript says “**Monthly uptime target is at least 99.9%**,” but the SRS does not define whether this excludes planned maintenance or how downtime is measured.
+- The SRS does not specify what “**Patients can request, reschedule, and cancel appointments**” actually entails. The analyst included the verbs, but not the workflow details, eligibility rules, or any status constraints.
+- The SRS does not specify the required contents or format of the admin dashboard beyond “daily appointment volume” and “no-show rate.” It omits any layout, refresh frequency, filtering, or export expectations mentioned nowhere but needed for implementation clarity.
+- The SRS does not define the exact behavior of “**Notifications for confirmations/cancellations should be delivered within 10 minutes**.” It records the timing, but not delivery channels, retry behavior, or what happens on notification failure.
+- The SRS does not describe the EHR synchronization behavior beyond “sync appointment status updates.” The transcript says “**The platform must sync appointment status updates to the hospital EHR system**,” but no sync timing, directionality, conflict handling, or error recovery is specified.
+- The SRS does not clarify the emergency offline requirement. The transcript states “**During network outages, emergency triage and patient lookup must still operate offline for continuity of care**,” but the SRS does not explain what “operate offline” means functionally, how data is cached, or what limited functions are available.
+- The SRS does not address the pilot-launch constraint from Clinical Operations in an implementation-facing way. The transcript says “**for pilot launch in September**,” but the SRS only repeats this as a general purpose statement without any milestone or release assumption.
+
+## Unresolved Contradictions
+- The SRS reproduces the direct conflict but does not resolve it: “**During network outages, emergency triage and patient lookup must still operate offline**” versus “**Offline access is not allowed for patient data screens**.” The Open Questions section notes this, but the SRS still leaves the core requirement contradictory and unresolvable as written.
+- The retention requirements remain contradictory and are not reconciled: “**Keep immutable clinical audit logs for 7 years for legal and quality audits**” versus “**Delete patient interaction logs after 30 days to minimize retention risk**.” The SRS treats them as separate items, but it does not explain whether patient interaction logs are part of audit logs, related records, or distinct data sets.
+- The SRS also duplicates the audit logging requirement in two places with slightly different wording:
+  - FR-17: “**keep immutable clinical audit logs for 7 years for legal and quality audits**”
+  - NFR-6: “**keep immutable clinical audit logs for 7 years**”
+  This creates ambiguity about whether NFR-6 is redundant or intended to add a separate requirement.
+- The transcript says “**All user sessions must be validated against the central cloud IAM in real time**,” which conflicts operationally with offline operation for triage/patient lookup. The SRS lists both requirements but does not explain how session validation works during outages, leaving a practical contradiction unresolved.
+
+## Hallucinated Requirements
+- The SRS introduces “**clinical audit logging**” as part of the scope, but the transcript specifically requires “**Keep immutable clinical audit logs for 7 years for legal and quality audits**.” The generic phrase “clinical audit logging” weakens the legal immutability and retention obligation and could be interpreted too broadly or too loosely.
+- The SRS adds “**patient interaction logs shall be deleted after 30 days**” as NFR-7. The transcript says “**Delete patient interaction logs after 30 days to minimize retention risk**,” but it does not define a logging subsystem or classify these logs as a non-functional requirement. This is a structural reclassification by the analyst, not necessarily a true requirement type from the stakeholder.
+- The SRS’s Section 6 “Contradictions and Risks” is not a stakeholder requirement and may be an analyst-added artifact. While not harmful, it is not grounded in the transcript as a required deliverable.
+- The SRS implies the system will support a full “**Hospital Appointment and Triage Coordination System**” with operational reporting and stakeholder management, but the transcript only establishes pilot-launch needs. The broader product framing may be acceptable, but the analyst has expanded scope without explicit stakeholder confirmation.
+
+## Overall Assessment
+NEEDS REVISION. The SRS captures many core items correctly, but it leaves major contradictions unresolved—especially offline access versus no offline patient screens, and 7-year immutable audit logs versus 30-day deletion of interaction logs. It also omits implementation-critical detail for the EHR sync, offline behavior, notification behavior, and appointment workflows.

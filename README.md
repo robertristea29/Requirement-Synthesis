@@ -52,12 +52,18 @@ Each baseline run writes:
 - `architecture_container.mmd` (container-level Mermaid diagram, if present)
 - `run_metadata.json` (model, token usage, estimated cost, parse status)
 - `srs_validation.json` (SRS structure compliance results)
+- `phase5_metrics.json` (requirements, contradiction, Mermaid, and C4 consistency metrics)
 
 Run tracking:
 
 - `data/runs/run_registry.jsonl` stores one record per run with reason and estimated cost.
 - Detailed run-output file descriptions are in `data/runs/README.md`.
 - Baseline prompt text is in `prompts/baseline_single_shot_prompt.txt`.
+
+Phase 5 validation:
+
+- The Phase 5 evaluator can score any existing run folder in `data/runs/` because it reads the saved artifacts directly.
+- New baseline and pipeline runs will also write `phase5_metrics.json` automatically.
 
 Manual command reference:
 
@@ -124,8 +130,17 @@ Inside that folder:
 | 2 | Golden dataset (hospital scenario, 10 requirements, 2 contradictions) | Complete |
 | 3 | Baseline single-shot pipeline + SRS spec validation | Complete |
 | 4 | Multi-agent pipeline (Analyst → Critic → Architect) | Complete (not yet run) |
-| 5 | Quantitative validators (recall, precision, contradiction catch, Mermaid syntax) | **Next** |
-| 6 | Repeated experiments + comparison report | Pending |
+| 5 | Quantitative validators (recall, precision, contradiction catch, Mermaid syntax) | Complete |
+| 6 | Repeated experiments + comparison report | **Next** |
+
+## Phase 5 Status
+
+Complete:
+
+- Run-level evaluator in `src/validators/phase5_evaluator.py` — scores recall, precision, contradiction catch rate, Mermaid syntax, C4 consistency, and SRS structure.
+- Run evaluation entry point in `src/pipeline/evaluate_run.py` — CLI wrapper for manually scoring any existing run folder.
+
+Phase 5 evaluator runs automatically at the end of every new baseline and pipeline run. It also scores old run folders without making any API calls. Output is written as `phase5_metrics.json` inside each run folder.
 
 
 FLOW

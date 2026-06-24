@@ -1,0 +1,37 @@
+C4Context
+title Hospital Appointment and Triage Coordination System - System Context
+
+Person(patient, "Patient", "Uses the system to log in, request, reschedule, and cancel appointments; may need patient lookup during network outages.")
+Person(clinician, "Clinician", "Creates and updates triage records; supports emergency triage and patient lookup during network outages.")
+Person(admin_user, "Admin User", "Uses the admin dashboard for appointment volume and no-show rate reporting.")
+Person(clinical_ops, "Clinical Operations", "Stakeholder for operational use of the system.")
+Person(it_ops, "IT Ops", "Stakeholder for operational support and maintenance.")
+Person(ehr_team, "EHR Team", "Stakeholder responsible for EHR synchronization.")
+Person(compliance_team, "Compliance Team", "Stakeholder for audit and compliance needs.")
+Person(privacy_officer, "Privacy Officer", "Stakeholder for privacy and retention concerns.")
+Person(security_arch_team, "Security Architecture Team", "Stakeholder for identity and security architecture.")
+
+System_Boundary(hospital_system_boundary, "Hospital Appointment and Triage Coordination System") {
+  System(hospital_system, "Hospital Appointment and Triage Coordination System", "Manages appointments, triage records, notifications, reporting, audit logging, offline continuity, and EHR synchronization.")
+}
+
+System_Ext(national_health_id, "National Health Identity Account", "Identity provider used for patient login.")
+System_Ext(central_cloud_iam, "Central Cloud IAM", "Validates user sessions in real time.")
+System_Ext(hospital_ehr, "Hospital EHR System", "Receives appointment status updates.")
+System_Ext(notification_service, "Notification Service", "Delivers confirmation and cancellation notifications.")
+
+Rel(patient, hospital_system, "Logs in, requests/reschedules/cancels appointments, and accesses continuity-of-care functions", "HTTPS")
+Rel(clinician, hospital_system, "Creates and updates triage records; performs emergency triage and patient lookup", "HTTPS")
+Rel(admin_user, hospital_system, "Views administrative dashboard", "HTTPS")
+
+Rel(clinical_ops, hospital_system, "Uses operational functions and reporting", "HTTPS")
+Rel(it_ops, hospital_system, "Supports system operations", "HTTPS")
+Rel(ehr_team, hospital_system, "Supports EHR synchronization", "HTTPS")
+Rel(compliance_team, hospital_system, "Reviews audit and compliance controls", "HTTPS")
+Rel(privacy_officer, hospital_system, "Reviews retention and privacy controls", "HTTPS")
+Rel(security_arch_team, hospital_system, "Reviews identity and security controls", "HTTPS")
+
+Rel(hospital_system, national_health_id, "Authenticates patients using national health identity only", "OIDC/SAML")
+Rel(hospital_system, central_cloud_iam, "Validates all user sessions in real time", "IAM")
+Rel(hospital_system, hospital_ehr, "Synchronizes appointment status updates", "API")
+Rel(hospital_system, notification_service, "Sends appointment confirmation and cancellation notifications", "API")

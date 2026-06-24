@@ -1,0 +1,34 @@
+C4Context
+title Hospital Appointment and Triage Coordination System - System Context
+
+Person(patient, "Patient", "Logs in with national health identity, requests/reschedules/cancels appointments, and receives confirmations/cancellations.")
+Person(clinician, "Clinician", "Creates and updates triage records.")
+Person(adminUser, "Admin User", "Uses the administrative dashboard for operational reporting.")
+Person(clinicalOperations, "Clinical Operations", "Stakeholder for hospital appointment and triage coordination.")
+Person(itOps, "IT Ops", "Stakeholder for operational support and system administration.")
+Person(ehrTeam, "EHR Team", "Stakeholder responsible for the hospital EHR integration.")
+Person(complianceTeam, "Compliance Team", "Stakeholder for audit and retention requirements.")
+Person(privacyOfficer, "Privacy Officer", "Stakeholder for privacy and retention oversight.")
+Person(securityArchitectureTeam, "Security Architecture Team", "Stakeholder for security and IAM considerations.")
+
+System(system, "Hospital Appointment and Triage Coordination System", "Supports appointment management, triage coordination, notifications, reporting, audit logging, and offline emergency triage/patient lookup.")
+
+System_Ext(nationalHealthIdentity, "National Health Identity Account", "Used for patient login only.")
+System_Ext(hospitalEHR, "Hospital EHR System", "Receives appointment status updates.")
+System_Ext(notificationService, "Notification Service", "Delivers confirmation and cancellation notifications.")
+System_Ext(centralCloudIAM, "Central Cloud IAM", "Validates all user sessions in real time.")
+
+Rel(patient, system, "Requests/reschedules/cancels appointments; views confirmations and notifications")
+Rel(patient, nationalHealthIdentity, "Authenticates with")
+Rel(clinician, system, "Creates and updates triage records")
+Rel(adminUser, system, "Views operational dashboard")
+Rel(clinicalOperations, system, "Monitors operational reporting and coordination")
+Rel(itOps, system, "Supports platform operations")
+Rel(ehrTeam, hospitalEHR, "Oversees integration with")
+Rel(complianceTeam, system, "Reviews audit and retention controls")
+Rel(privacyOfficer, system, "Oversees privacy and log retention requirements")
+Rel(securityArchitectureTeam, centralCloudIAM, "Oversees IAM and security integration")
+
+Rel(system, notificationService, "Sends appointment confirmation and cancellation notifications")
+Rel(system, hospitalEHR, "Synchronizes appointment status updates")
+Rel(system, centralCloudIAM, "Validates user sessions in real time")

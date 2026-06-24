@@ -1,0 +1,55 @@
+{
+  "run_id": "pipeline_20260624_164625",
+  "timestamp_utc": "2026-06-24T16:46:25.108582+00:00",
+  "model": "gpt-5.4-mini",
+  "agent_usage": [
+    {
+      "agent": "analyst",
+      "input_tokens": 597,
+      "output_tokens": 870,
+      "total_tokens": 1467
+    },
+    {
+      "agent": "critic",
+      "input_tokens": 1373,
+      "output_tokens": 1070,
+      "total_tokens": 2443
+    },
+    {
+      "agent": "architect_context",
+      "input_tokens": 968,
+      "output_tokens": 510,
+      "total_tokens": 1478
+    },
+    {
+      "agent": "architect_container",
+      "input_tokens": 1535,
+      "output_tokens": 558,
+      "total_tokens": 2093
+    }
+  ],
+  "estimated_cost_usd": 0.01689075,
+  "cost_guardrail_max_run_usd": 0.25,
+  "parsed": {
+    "srs_extracted": true,
+    "critique_extracted": true,
+    "context_diagram_extracted": true,
+    "container_diagram_extracted": true
+  },
+  "srs_spec_validation": {
+    "passed": true,
+    "missing_headings": [],
+    "fr_count": 19,
+    "nfr_count": 7,
+    "contradiction_count": 2
+  },
+  "phase5_summary": {
+    "requirement_recall": 1.0,
+    "requirement_precision": 0.5769,
+    "contradiction_catch_rate": 0.5,
+    "context_diagram_valid": true,
+    "container_diagram_valid": true,
+    "c4_consistency_passed": false,
+    "srs_structure_passed": true
+  }
+}

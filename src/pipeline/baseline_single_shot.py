@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from src.pipeline.dataset_loader import load_golden_dataset
+from src.validators.phase5_evaluator import evaluate_run
 from src.validators.srs_spec_validator import validate_srs_spec
 
 
@@ -225,6 +226,10 @@ def main() -> int:
             "contradiction_count": srs_validation.contradiction_count,
         },
     }
+    _write_text(run_dir / "run_metadata.json", json.dumps(metadata, indent=2))
+
+    phase5_metrics = evaluate_run(run_dir)
+    metadata["phase5_summary"] = phase5_metrics["summary"]
     _write_text(run_dir / "run_metadata.json", json.dumps(metadata, indent=2))
 
     run_reason = os.getenv("RUN_REASON", "manual_baseline_run")

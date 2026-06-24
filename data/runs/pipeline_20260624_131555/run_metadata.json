@@ -1,0 +1,46 @@
+{
+  "run_id": "pipeline_20260624_131555",
+  "timestamp_utc": "2026-06-24T13:15:55.714799+00:00",
+  "model": "gpt-5.4-mini",
+  "agent_usage": [
+    {
+      "agent": "analyst",
+      "input_tokens": 597,
+      "output_tokens": 839,
+      "total_tokens": 1436
+    },
+    {
+      "agent": "critic",
+      "input_tokens": 1342,
+      "output_tokens": 1008,
+      "total_tokens": 2350
+    },
+    {
+      "agent": "architect_context",
+      "input_tokens": 937,
+      "output_tokens": 617,
+      "total_tokens": 1554
+    },
+    {
+      "agent": "architect_container",
+      "input_tokens": 1611,
+      "output_tokens": 753,
+      "total_tokens": 2364
+    }
+  ],
+  "estimated_cost_usd": 0.01784175,
+  "cost_guardrail_max_run_usd": 0.25,
+  "parsed": {
+    "srs_extracted": true,
+    "critique_extracted": true,
+    "context_diagram_extracted": true,
+    "container_diagram_extracted": true
+  },
+  "srs_spec_validation": {
+    "passed": true,
+    "missing_headings": [],
+    "fr_count": 20,
+    "nfr_count": 6,
+    "contradiction_count": 2
+  }
+}

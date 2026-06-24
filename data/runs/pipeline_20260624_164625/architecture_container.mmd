@@ -1,0 +1,35 @@
+C4Container
+title Hospital Appointment and Triage Coordination System - Container Diagram
+
+System_Boundary(systemBoundary, "Hospital Appointment and Triage Coordination System") {
+    Container(webApp, "Web App", "Web application", "Provides patient, clinician, and admin user interfaces for appointment management, triage records, dashboard reporting, and emergency triage/patient lookup.")
+    Container(apiServer, "API Server", "Application server", "Handles authentication session validation, appointment request/reschedule/cancellation, triage record creation and updates, reporting, and integration calls.")
+    ContainerDb(database, "Operational Database", "Relational database", "Stores appointments, triage records, reference codes, reporting data, and operational records.")
+    ContainerDb(auditLogStore, "Clinical Audit Log Store", "Immutable log store", "Stores immutable clinical audit logs retained for 7 years.")
+    Container(notificationWorker, "Notification Worker", "Background worker", "Sends appointment confirmation and cancellation notifications and manages reference code generation and delivery triggers.")
+    Container(offlineService, "Emergency Offline Service", "Local offline service", "Supports emergency triage and patient lookup during network outages.")
+    Container(reportingModule, "Reporting Module", "Reporting component", "Generates daily appointment volume and no-show rate reports for the administrative dashboard.")
+}
+
+Rel(patient, webApp, "Requests/reschedules/cancels appointments; views confirmations and notifications")
+Rel(clinician, webApp, "Creates and updates triage records")
+Rel(adminUser, webApp, "Views operational dashboard")
+Rel(clinicalOperations, webApp, "Monitors operational reporting and coordination")
+Rel(itOps, webApp, "Supports platform operations")
+Rel(complianceTeam, webApp, "Reviews audit and retention controls")
+Rel(privacyOfficer, webApp, "Oversees privacy and log retention requirements")
+
+Rel(webApp, apiServer, "Uses")
+Rel(apiServer, database, "Reads from and writes to")
+Rel(apiServer, auditLogStore, "Writes clinical audit events")
+Rel(apiServer, notificationWorker, "Queues confirmation and cancellation notifications")
+Rel(apiServer, reportingModule, "Provides reporting data")
+Rel(apiServer, offlineService, "Supports emergency triage and patient lookup during outages")
+
+Rel(apiServer, nationalHealthIdentity, "Authenticates patients with")
+Rel(apiServer, centralCloudIAM, "Validates user sessions in real time")
+Rel(notificationWorker, notificationService, "Sends appointment confirmation and cancellation notifications")
+Rel(apiServer, hospitalEHR, "Synchronizes appointment status updates")
+
+Rel(ehrTeam, hospitalEHR, "Oversees integration with")
+Rel(securityArchitectureTeam, centralCloudIAM, "Oversees IAM and security integration")

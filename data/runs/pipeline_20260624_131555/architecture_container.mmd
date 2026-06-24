@@ -1,0 +1,40 @@
+C4Container
+title Hospital Appointment and Triage Coordination System - Container Diagram
+
+Person(patient, "Patient", "Uses the system to log in, request, reschedule, and cancel appointments; may need patient lookup during network outages.")
+Person(clinician, "Clinician", "Creates and updates triage records; supports emergency triage and patient lookup during network outages.")
+Person(admin_user, "Admin User", "Uses the admin dashboard for appointment volume and no-show rate reporting.")
+
+System_Ext(national_health_id, "National Health Identity Account", "Identity provider used for patient login.")
+System_Ext(central_cloud_iam, "Central Cloud IAM", "Validates user sessions in real time.")
+System_Ext(hospital_ehr, "Hospital EHR System", "Receives appointment status updates.")
+System_Ext(notification_service, "Notification Service", "Delivers confirmation and cancellation notifications.")
+
+System_Boundary(hospital_system_boundary, "Hospital Appointment and Triage Coordination System") {
+  Container(web_app, "Web App", "Web application", "Provides patient, clinician, and admin user interfaces for appointments, triage, lookup, and reporting.")
+  Container(api_server, "API Server", "Application server", "Implements appointment management, triage records, reporting, identity/session validation, and offline continuity logic.")
+  ContainerDb(operational_db, "Operational Database", "Relational database", "Stores appointments, triage records, user data, and operational reporting data.")
+  ContainerDb(audit_log_store, "Clinical Audit Log Store", "Immutable log storage", "Stores immutable clinical audit logs retained for 7 years.")
+  Container(offline_sync_service, "Offline Continuity Service", "Background service", "Supports emergency triage and patient lookup during network outages and synchronizes deferred actions when connectivity returns.")
+  Container(notification_worker, "Notification Worker", "Background worker", "Sends appointment confirmation and cancellation notifications within 10 minutes.")
+  Container(ehr_sync_worker, "EHR Sync Worker", "Background worker", "Synchronizes appointment status updates to the hospital EHR system.")
+}
+
+Rel(patient, web_app, "Uses for login, appointment requests, reschedules, cancellations, and continuity-of-care functions", "HTTPS")
+Rel(clinician, web_app, "Uses for triage record creation, updates, emergency triage, and patient lookup", "HTTPS")
+Rel(admin_user, web_app, "Uses for administrative dashboard reporting", "HTTPS")
+
+Rel(web_app, api_server, "Invokes application functions", "HTTPS")
+Rel(api_server, national_health_id, "Authenticates patients using national health identity only", "OIDC/SAML")
+Rel(api_server, central_cloud_iam, "Validates all user sessions in real time", "IAM")
+
+Rel(api_server, operational_db, "Reads and writes appointments, triage records, and reporting data", "SQL")
+Rel(api_server, audit_log_store, "Writes immutable clinical audit events", "Append-only write")
+Rel(api_server, notification_worker, "Queues notification jobs for confirmations and cancellations", "Internal async")
+Rel(api_server, ehr_sync_worker, "Queues appointment status sync events", "Internal async")
+Rel(api_server, offline_sync_service, "Supports offline emergency triage and patient lookup workflows", "Internal async")
+
+Rel(notification_worker, notification_service, "Delivers confirmation and cancellation notifications", "API")
+Rel(ehr_sync_worker, hospital_ehr, "Synchronizes appointment status updates", "API")
+Rel(offline_sync_service, operational_db, "Reads cached patient and appointment data for offline continuity", "Local data access")
+Rel(offline_sync_service, audit_log_store, "Records offline clinical audit events", "Append-only write")

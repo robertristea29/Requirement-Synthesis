@@ -1,0 +1,409 @@
+{
+  "run_id": "pipeline_20260624_164625",
+  "timestamp_utc": "2026-06-24T16:46:25.108582+00:00",
+  "overall_pass": false,
+  "summary": {
+    "requirement_recall": 1.0,
+    "requirement_precision": 0.5769,
+    "contradiction_catch_rate": 0.5,
+    "context_diagram_valid": true,
+    "container_diagram_valid": true,
+    "c4_consistency_passed": false,
+    "srs_structure_passed": true
+  },
+  "requirements": {
+    "ground_truth_total": 10,
+    "extracted_total": 26,
+    "matched_ground_truth": 10,
+    "matched_extracted": 15,
+    "recall": 1.0,
+    "precision": 0.5769,
+    "ground_truth_details": [
+      {
+        "id": "R1",
+        "type": "functional",
+        "covered": true,
+        "best_score": 0.71,
+        "matched_extracted_ids": [
+          "FR-2"
+        ]
+      },
+      {
+        "id": "R2",
+        "type": "functional",
+        "covered": true,
+        "best_score": 0.7327,
+        "matched_extracted_ids": [
+          "FR-3"
+        ]
+      },
+      {
+        "id": "R3",
+        "type": "functional",
+        "covered": true,
+        "best_score": 0.5775,
+        "matched_extracted_ids": [
+          "FR-4",
+          "FR-5",
+          "FR-6"
+        ]
+      },
+      {
+        "id": "R4",
+        "type": "functional",
+        "covered": true,
+        "best_score": 0.7067,
+        "matched_extracted_ids": [
+          "FR-7",
+          "FR-8",
+          "FR-9"
+        ]
+      },
+      {
+        "id": "R5",
+        "type": "functional",
+        "covered": true,
+        "best_score": 0.8809,
+        "matched_extracted_ids": [
+          "FR-10"
+        ]
+      },
+      {
+        "id": "R6",
+        "type": "functional",
+        "covered": true,
+        "best_score": 0.8472,
+        "matched_extracted_ids": [
+          "FR-13"
+        ]
+      },
+      {
+        "id": "R7",
+        "type": "functional",
+        "covered": true,
+        "best_score": 0.6201,
+        "matched_extracted_ids": [
+          "FR-14",
+          "FR-15"
+        ]
+      },
+      {
+        "id": "R8",
+        "type": "non_functional",
+        "covered": true,
+        "best_score": 0.7201,
+        "matched_extracted_ids": [
+          "NFR-1"
+        ]
+      },
+      {
+        "id": "R9",
+        "type": "non_functional",
+        "covered": true,
+        "best_score": 0.7464,
+        "matched_extracted_ids": [
+          "NFR-2"
+        ]
+      },
+      {
+        "id": "R10",
+        "type": "non_functional",
+        "covered": true,
+        "best_score": 0.6802,
+        "matched_extracted_ids": [
+          "NFR-3"
+        ]
+      }
+    ],
+    "extracted_details": [
+      {
+        "id": "FR-1",
+        "kind": "functional",
+        "relevant": false,
+        "best_score": 0.2877,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "FR-2",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.71,
+        "matched_ground_truth_ids": [
+          "R1"
+        ]
+      },
+      {
+        "id": "FR-3",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.7327,
+        "matched_ground_truth_ids": [
+          "R2"
+        ]
+      },
+      {
+        "id": "FR-4",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.5775,
+        "matched_ground_truth_ids": [
+          "R3"
+        ]
+      },
+      {
+        "id": "FR-5",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.5775,
+        "matched_ground_truth_ids": [
+          "R3"
+        ]
+      },
+      {
+        "id": "FR-6",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.5398,
+        "matched_ground_truth_ids": [
+          "R3"
+        ]
+      },
+      {
+        "id": "FR-7",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.684,
+        "matched_ground_truth_ids": [
+          "R4"
+        ]
+      },
+      {
+        "id": "FR-8",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.7067,
+        "matched_ground_truth_ids": [
+          "R4"
+        ]
+      },
+      {
+        "id": "FR-9",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.6761,
+        "matched_ground_truth_ids": [
+          "R4"
+        ]
+      },
+      {
+        "id": "FR-10",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.8809,
+        "matched_ground_truth_ids": [
+          "R5"
+        ]
+      },
+      {
+        "id": "FR-11",
+        "kind": "functional",
+        "relevant": false,
+        "best_score": 0.3378,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "FR-12",
+        "kind": "functional",
+        "relevant": false,
+        "best_score": 0.3233,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "FR-13",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.8472,
+        "matched_ground_truth_ids": [
+          "R6"
+        ]
+      },
+      {
+        "id": "FR-14",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.6201,
+        "matched_ground_truth_ids": [
+          "R7"
+        ]
+      },
+      {
+        "id": "FR-15",
+        "kind": "functional",
+        "relevant": true,
+        "best_score": 0.5366,
+        "matched_ground_truth_ids": [
+          "R7"
+        ]
+      },
+      {
+        "id": "FR-16",
+        "kind": "functional",
+        "relevant": false,
+        "best_score": 0.2483,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "FR-17",
+        "kind": "functional",
+        "relevant": false,
+        "best_score": 0.2708,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "FR-18",
+        "kind": "functional",
+        "relevant": false,
+        "best_score": 0.2537,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "FR-19",
+        "kind": "functional",
+        "relevant": false,
+        "best_score": 0.2402,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "NFR-1",
+        "kind": "non_functional",
+        "relevant": true,
+        "best_score": 0.7201,
+        "matched_ground_truth_ids": [
+          "R8"
+        ]
+      },
+      {
+        "id": "NFR-2",
+        "kind": "non_functional",
+        "relevant": true,
+        "best_score": 0.7464,
+        "matched_ground_truth_ids": [
+          "R9"
+        ]
+      },
+      {
+        "id": "NFR-3",
+        "kind": "non_functional",
+        "relevant": true,
+        "best_score": 0.6802,
+        "matched_ground_truth_ids": [
+          "R10"
+        ]
+      },
+      {
+        "id": "NFR-4",
+        "kind": "non_functional",
+        "relevant": false,
+        "best_score": 0.2105,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "NFR-5",
+        "kind": "non_functional",
+        "relevant": false,
+        "best_score": 0.235,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "NFR-6",
+        "kind": "non_functional",
+        "relevant": false,
+        "best_score": 0.2074,
+        "matched_ground_truth_ids": []
+      },
+      {
+        "id": "NFR-7",
+        "kind": "non_functional",
+        "relevant": false,
+        "best_score": 0.2067,
+        "matched_ground_truth_ids": []
+      }
+    ]
+  },
+  "contradictions": {
+    "ground_truth_total": 2,
+    "caught": 1,
+    "catch_rate": 0.5,
+    "details": [
+      {
+        "id": "C1",
+        "category": "authentication",
+        "statement_a_present": true,
+        "statement_b_present": false,
+        "caught": false
+      },
+      {
+        "id": "C2",
+        "category": "data_retention",
+        "statement_a_present": true,
+        "statement_b_present": true,
+        "caught": true
+      }
+    ]
+  },
+  "mermaid": {
+    "context": {
+      "diagram_kind": "C4Context",
+      "valid": true,
+      "issues": [],
+      "entity_counts": {
+        "persons": 9,
+        "systems": 1,
+        "system_exts": 4,
+        "containers": 0,
+        "boundaries": 0,
+        "relations": 13
+      }
+    },
+    "container": {
+      "diagram_kind": "C4Container",
+      "valid": true,
+      "issues": [],
+      "entity_counts": {
+        "persons": 0,
+        "systems": 0,
+        "system_exts": 0,
+        "containers": 5,
+        "boundaries": 1,
+        "relations": 19
+      }
+    }
+  },
+  "c4_consistency": {
+    "passed": false,
+    "context_external_systems": [
+      "Central Cloud IAM",
+      "Hospital EHR System",
+      "National Health Identity Account",
+      "Notification Service"
+    ],
+    "container_external_systems": [],
+    "missing_in_container": [
+      "Central Cloud IAM",
+      "Hospital EHR System",
+      "National Health Identity Account",
+      "Notification Service"
+    ],
+    "extra_in_container": [],
+    "main_system_alignment": [
+      "Hospital Appointment and Triage Coordination System"
+    ]
+  },
+  "srs_validation": {
+    "passed": true,
+    "missing_headings": [],
+    "fr_count": 19,
+    "nfr_count": 7,
+    "contradiction_count": 2
+  }
+}
