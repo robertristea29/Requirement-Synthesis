@@ -54,7 +54,8 @@ def _score_text(left: str, right: str) -> float:
 def _extract_requirement_items(srs_text: str) -> list[dict[str, str]]:
     # Pull FR/NFR lines out of the generated SRS so we can compare them against
     # the golden requirements stored in the dataset.
-    pattern = re.compile(r"(?m)^(?:-\s*)?((?:FR|NFR)-\d+):\s*(.+?)\s*$")
+    # Accept both "FR-1: text" (pipeline format) and "FR-1 text" (baseline format).
+    pattern = re.compile(r"(?m)^(?:-\s*)?((?:FR|NFR)-\d+)[: ]\s*(.+?)\s*$")
     items: list[dict[str, str]] = []
     for match in pattern.finditer(srs_text):
         requirement_id = match.group(1).strip()
@@ -269,8 +270,11 @@ def evaluate_run(run_dir: str | Path, ground_truth_path: str | Path | None = Non
     ground_truth = _read_json(truth_path)
     srs_text = _read_text(run_path / "srs.md")
     critique_text = _read_text(run_path / "critique.md")
-    context_text = _read_text(run_path / "architecture_context.mmd")
-    container_text = _read_text(run_path / "architecture_container.mmd")
+    # Strip legacy ENDC4 artifacts that appeared in early runs before the
+    # diagram extraction bug was fixed.  Stripping them here means old run
+    # folders are scored fairly without manual file edits.
+    context_text = re.sub(r"ENDC4\w*", "", _read_text(run_path / "architecture_context.mmd")).strip()
+    container_text = re.sub(r"ENDC4\w*", "", _read_text(run_path / "architecture_container.mmd")).strip()
     run_metadata = _read_json(run_path / "run_metadata.json")
     srs_validation_path = run_path / "srs_validation.json"
     srs_validation = _read_json(srs_validation_path) if srs_validation_path.exists() else {}

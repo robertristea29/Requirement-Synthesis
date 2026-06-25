@@ -1,170 +1,314 @@
 # Requirement Synthesis
 
-This repository is initialized with a minimal, Docker-first Phase 1 foundation.
-
-## Phase 1 Status
-
-Completed:
-
-- Runtime setup with `Dockerfile` and `docker-compose.yml`.
-- Dependency setup in `requirements.txt`.
-- API and pricing smoke test in `src/smoke_test.py`.
-- Secure Docker build context via `.dockerignore`.
-- Initial project folders for upcoming phases:
-	- `data/golden/`
-	- `data/runs/`
-	- `src/pipeline/`
-	- `src/validators/`
-
-## Phase 2 Status
-
-Completed:
-
-- Golden stakeholder transcript in `data/golden/stakeholder_transcript.md`.
-- Ground truth annotations in `data/golden/ground_truth.json`.
-- Dataset loader utility in `src/pipeline/dataset_loader.py`.
-
-Golden dataset currently includes:
-
-- 10 requirements
-- 2 intentional contradictions
-
-Current dataset scenario:
-
-- Hospital Appointment and Triage Coordination
-
-## Phase 3 Status
-
-Completed:
-
-- Single-shot baseline pipeline in `src/pipeline/baseline_single_shot.py`.
-- Baseline prompt template in `prompts/baseline_single_shot_prompt.txt`.
-- SRS specification reference in `prompts/srs_spec.md`.
-- SRS spec validator in `src/validators/srs_spec_validator.py`.
-- Baseline run artifacts written per run under `data/runs/baseline_YYYYMMDD_HHMMSS/`.
-
-Each baseline run writes:
-
-- `raw_response.txt` (full model output)
-- `srs.md` (extracted SRS block)
-- `architecture.mmd` (primary Mermaid diagram)
-- `architecture_context.mmd` (context-level Mermaid diagram, if present)
-- `architecture_container.mmd` (container-level Mermaid diagram, if present)
-- `run_metadata.json` (model, token usage, estimated cost, parse status)
-- `srs_validation.json` (SRS structure compliance results)
-- `phase5_metrics.json` (requirements, contradiction, Mermaid, and C4 consistency metrics)
-
-Run tracking:
-
-- `data/runs/run_registry.jsonl` stores one record per run with reason and estimated cost.
-- Detailed run-output file descriptions are in `data/runs/README.md`.
-- Baseline prompt text is in `prompts/baseline_single_shot_prompt.txt`.
-
-Phase 5 validation:
-
-- The Phase 5 evaluator can score any existing run folder in `data/runs/` because it reads the saved artifacts directly.
-- New baseline and pipeline runs will also write `phase5_metrics.json` automatically.
-
-Manual command reference:
-
-- `RUN_COMMANDS.md` contains the exact commands for smoke test and baseline runs.
-
-## How to Run (Step by Step)
-
-### Prerequisites
-
-- Docker Desktop must be open and running (green engine icon in system tray).
-- A `.env` file must exist at the project root containing your OpenAI API key.
-
-### Step 1 — Open a terminal in the project folder
-
-In VS Code: open the Terminal menu → New Terminal. Make sure the path shown ends with `Requirement-Synthesis`.
-
-### Step 2 — Choose what to run
-
-**Smoke test** — cheapest connectivity check. Sends one tiny prompt and prints token/cost. No output files are saved. Use this to confirm Docker and your API key work.
-
-```powershell
-docker compose run --rm app
-```
-
-**Baseline run** — the real experiment. Sends the hospital transcript to the model, extracts SRS + C4 diagrams, validates SRS structure, and saves all output files under `data/runs/`.
-
-```powershell
-docker compose run --rm app python -m src.pipeline.baseline_single_shot
-```
-
-**Multi-agent pipeline run** — 3-agent pipeline (Analyst → Critic → Architect). Rebuild image first if not done yet.
-
-```powershell
-docker compose build
-docker compose run --rm app python -m src.pipeline.multi_agent_pipeline
-```
-
-### Step 3 — Find the output
-
-After a baseline run completes, a new timestamped folder appears under `data/runs/`, for example `data/runs/baseline_20260613_122123/`.
-
-Inside that folder:
-
-| File | What it contains |
-|---|---|
-| `srs.md` | The generated Software Requirements Specification |
-| `architecture_context.mmd` | C4 Level 1 diagram — paste into https://mermaid.live to view |
-| `architecture_container.mmd` | C4 Level 2 diagram — paste into https://mermaid.live to view |
-| `srs_validation.json` | Did the SRS follow the required structure? |
-| `run_metadata.json` | Token usage, estimated cost, parse success flags |
-| `raw_response.txt` | Full unprocessed model output |
-
-### Step 4 — Check the run registry
-
-`data/runs/run_registry.jsonl` — one line per run with reason and cost. Lets you track all spending.
+A multi-agent AI pipeline for synthesising software requirements from messy stakeholder input. Built as a FONTYS Semester 6 individual research project.
 
 ---
 
-## Current Roadmap
+## Project Overview
+
+The system ingests a raw stakeholder transcript (emails, meeting notes, Slack threads) and produces a structured Software Requirements Specification (SRS) and C4 architecture diagrams. Two approaches are compared:
+
+- **Baseline** — a single OpenAI API call that does everything at once.
+- **Multi-agent pipeline** — three specialised AI agents (Analyst, Critic, Architect) that run in sequence, each focused on one task. This is the research contribution.
+
+The final output is a quantitative comparison: does the multi-agent pipeline produce more complete, more precise, and more contradiction-aware requirements than the single-shot baseline?
+
+---
+
+## Roadmap
 
 | Phase | What | Status |
 |---|---|---|
 | 1 | Docker + environment setup | Complete |
 | 2 | Golden dataset (hospital scenario, 10 requirements, 2 contradictions) | Complete |
 | 3 | Baseline single-shot pipeline + SRS spec validation | Complete |
-| 4 | Multi-agent pipeline (Analyst → Critic → Architect) | Complete (not yet run) |
+| 4 | Multi-agent pipeline (Analyst → Critic → Architect) | Complete |
 | 5 | Quantitative validators (recall, precision, contradiction catch, Mermaid syntax) | Complete |
-| 6 | Repeated experiments + comparison report | **Next** |
+| 6 | Comparison report across all runs | Complete |
 
-## Phase 5 Status
+---
 
-Complete:
+## How the Multi-Agent Pipeline Works
 
-- Run-level evaluator in `src/validators/phase5_evaluator.py` — scores recall, precision, contradiction catch rate, Mermaid syntax, C4 consistency, and SRS structure.
-- Run evaluation entry point in `src/pipeline/evaluate_run.py` — CLI wrapper for manually scoring any existing run folder.
+### The Problem: Why Multiple Agents?
 
-Phase 5 evaluator runs automatically at the end of every new baseline and pipeline run. It also scores old run folders without making any API calls. Output is written as `phase5_metrics.json` inside each run folder.
+A single LLM call asked to do everything at once tends to miss contradictions, hallucinate requirements, and produce diagrams inconsistent with the SRS. Splitting the work into focused roles produces better output — this is the central hypothesis of the project.
+
+### LangGraph and StateGraph
+
+[LangGraph](https://github.com/langchain-ai/langgraph) is the orchestration library used to connect the three agents. It provides a `StateGraph` — a directed graph where:
+
+- Each **node** is a Python function (one agent).
+- Each **edge** defines which node runs next.
+- A single **shared state object** is passed from node to node.
+
+When you call `graph.invoke(initial_state)`, LangGraph runs the nodes in the defined order, passing the updated state forward after each one. There is no parallelism — the agents run sequentially: Analyst → Critic → Architect.
+
+### The Shared State (TypedDict)
+
+Python's `TypedDict` (from the `typing` module) is used to define the shape of the shared state. A `TypedDict` is a regular Python dict that has a declared structure — each key has a fixed type. This lets the code be clear about what fields exist without defining a class.
+
+The pipeline state looks like this:
+
+```python
+class PipelineState(TypedDict):
+    transcript: str        # the raw stakeholder input
+    srs: str               # written by the Analyst agent
+    critique: str          # written by the Critic agent
+    context_diagram: str   # written by the Architect agent (C4 Level 1)
+    container_diagram: str # written by the Architect agent (C4 Level 2)
+    usage_log: list        # token usage from every API call
+```
+
+Every agent receives the entire state and returns only the fields it changed. LangGraph merges the returned fields back into the state before passing it to the next agent.
+
+### The Three Agents and How They Communicate
+
+```
+Stakeholder Transcript
+        │
+        ▼
+┌───────────────────┐
+│   Analyst Agent   │  Reads: transcript
+│                   │  Writes: srs
+│  Prompt:          │
+│  analyst_prompt   │
+└────────┬──────────┘
+         │  srs is now in state
+         ▼
+┌───────────────────┐
+│   Critic Agent    │  Reads: transcript + srs
+│                   │  Writes: critique
+│  Prompt:          │
+│  critic_prompt    │
+└────────┬──────────┘
+         │  critique is now in state
+         ▼
+┌───────────────────┐
+│  Architect Agent  │  Reads: srs (call 1), srs + context_diagram (call 2)
+│                   │  Writes: context_diagram, container_diagram
+│  Prompts:         │
+│  architect_prompt │
+│  architect_       │
+│  container_prompt │
+└───────────────────┘
+        │
+        ▼
+   Artifacts saved to data/runs/pipeline_TIMESTAMP/
+```
+
+**Analyst** — reads the raw transcript and writes a structured SRS. It identifies functional requirements (FR-x), non-functional requirements (NFR-x), and contradictions (C-x). It does not see ground truth. Its only job is to read messy input and produce structured output.
+
+**Critic** — reads both the original transcript AND the Analyst's SRS. It checks for missing requirements the Analyst skipped, hallucinated requirements the Analyst invented, and contradictions between statements. It writes a critique document with an overall verdict: APPROVED or NEEDS REVISION. In this implementation the Critic's verdict is recorded but does not block the pipeline — the Architect always runs regardless.
+
+**Architect** — reads the Analyst's SRS and produces two C4 architecture diagrams. It makes two separate API calls: first it generates the C4Context diagram (the big-picture view: users, the system, external services), then it generates the C4Container diagram (what is inside the system: services, databases, APIs). The second call receives the first diagram so naming stays consistent between levels.
+
+Agents communicate **only through the shared state dict**. No agent calls another agent directly. LangGraph handles the passing of state between them.
+
+---
+
+## Repository Structure
+
+```
+Requirement-Synthesis/
+├── data/
+│   ├── golden/
+│   │   ├── stakeholder_transcript.md   # synthetic messy hospital input
+│   │   └── ground_truth.json           # 10 requirements + 2 contradictions (never shown to AI)
+│   └── runs/
+│       ├── run_registry.jsonl          # one line per run: id, phase, cost, timestamp
+│       ├── comparison_report.json      # Phase 6 output: all runs compared
+│       ├── comparison_report.csv       # same data as CSV for spreadsheets/reports
+│       └── <run_folder>/               # one folder per run, e.g. pipeline_20260624_164625/
+│           ├── srs.md
+│           ├── critique.md             # pipeline runs only
+│           ├── architecture_context.mmd
+│           ├── architecture_container.mmd
+│           ├── srs_validation.json
+│           ├── run_metadata.json
+│           └── phase5_metrics.json
+├── prompts/
+│   ├── baseline_single_shot_prompt.txt
+│   ├── analyst_prompt.txt
+│   ├── critic_prompt.txt
+│   ├── architect_prompt.txt
+│   ├── architect_container_prompt.txt
+│   └── srs_spec.md
+├── src/
+│   ├── pipeline/
+│   │   ├── dataset_loader.py           # reads transcript + ground_truth
+│   │   ├── baseline_single_shot.py     # Phase 3: single API call baseline
+│   │   ├── multi_agent_pipeline.py     # Phase 4: LangGraph 3-agent pipeline
+│   │   ├── evaluate_run.py             # CLI: score any existing run folder
+│   │   └── compare_runs.py             # Phase 6: side-by-side comparison table
+│   └── validators/
+│       ├── srs_spec_validator.py       # checks SRS heading/ID structure
+│       └── phase5_evaluator.py         # scores recall, precision, C4, contradictions
+├── .env                                # API key + config (never committed)
+├── Dockerfile
+├── docker-compose.yml
+└── requirements.txt
+```
+
+---
+
+## How to Run
+
+### Prerequisites
+
+- Docker Desktop must be open and running (green icon in system tray).
+- A `.env` file must exist at the project root with your OpenAI API key.
+
+### Available Commands
+
+**Smoke test** — sends one tiny prompt to verify Docker and the API key work. No output files saved.
+
+```powershell
+docker compose run --rm app
+```
+
+**Baseline run** — single API call. Produces SRS + C4 diagrams + metrics.
+
+```powershell
+docker compose run --rm app python -m src.pipeline.baseline_single_shot
+```
+
+**Multi-agent pipeline run** — runs the 3-agent LangGraph pipeline.
+
+```powershell
+docker compose build
+docker compose run --rm app python -m src.pipeline.multi_agent_pipeline
+```
+
+**Evaluate an existing run folder** — scores any run without making API calls.
+
+```powershell
+docker compose run --rm app python -m src.pipeline.evaluate_run data/runs/pipeline_20260624_164625
+```
+
+**Comparison report** — reads all evaluated runs and prints a side-by-side table.
+
+```powershell
+docker compose run --rm app python -m src.pipeline.compare_runs
+```
+
+### Changing the Model
+
+The model is set in `.env`:
+
+```
+OPENAI_MODEL=gpt-5.4-mini
+```
+
+Change that value and save. No rebuild needed — the `.env` file is injected at container startup, not baked into the image. The new model is used on the very next run.
+
+---
+
+## Output Files Per Run
+
+| File | What it contains |
+|---|---|
+| `srs.md` | Generated Software Requirements Specification |
+| `critique.md` | Critic agent's review (pipeline runs only) |
+| `architecture_context.mmd` | C4 Level 1 diagram — paste into https://mermaid.live |
+| `architecture_container.mmd` | C4 Level 2 diagram — paste into https://mermaid.live |
+| `srs_validation.json` | Did the SRS follow the required heading/ID structure? |
+| `run_metadata.json` | Token usage, estimated cost, parse success flags |
+| `raw_response.txt` | Full unprocessed model output (baseline only) |
+| `phase5_metrics.json` | Recall, precision, contradiction catch, C4 validity scores |
+
+---
+
+## Evaluation and Metrics
+
+Every run is automatically scored at the end against `data/golden/ground_truth.json`. The ground truth is never shown to the AI agents — it is only used for scoring after the fact.
+
+### What the Metrics Mean
+
+| Metric | Question it answers |
+|---|---|
+| `recall` | Did the AI cover every real requirement? 1.0 = all 10 found. |
+| `precision` | Of everything the AI extracted, how much maps to something real? Low precision means the AI invented extra requirements. |
+| `contradiction_catch_rate` | Of the 2 planted contradictions, how many did the Critic flag? Only meaningful for pipeline runs. |
+| `context_diagram_valid` | Does the C4Context diagram parse correctly? |
+| `container_diagram_valid` | Does the C4Container diagram parse correctly? |
+| `c4_consistency_passed` | Do the external systems named in the context diagram also appear in the container diagram? |
+| `srs_structure_passed` | Does the SRS contain all required headings and use FR-x / NFR-x / C-x IDs? |
+
+Requirement matching uses **fuzzy similarity** (SequenceMatcher + Jaccard). A match is accepted if the blended score exceeds 0.45. This tolerates wording differences while still requiring meaningful overlap.
+
+### Baseline vs Pipeline Comparison (Phase 6)
+
+`src/pipeline/compare_runs.py` reads every entry in `run_registry.jsonl`, loads the `phase5_metrics.json` from each run folder that has been evaluated, and produces a side-by-side comparison table. No API calls are made — it is purely read-only.
+
+```powershell
+docker compose run --rm app python -m src.pipeline.compare_runs
+```
+
+**What the table columns mean:**
+
+| Column | Meaning |
+|---|---|
+| `Recall` | Fraction of ground-truth requirements the AI covered |
+| `Prec` | Fraction of the AI's extracted requirements that map to something real |
+| `Contra` | Fraction of planted contradictions the Critic caught (always 0 for baselines) |
+| `Ctx` | C4Context diagram syntactically valid (yes/no) |
+| `Cnt` | C4Container diagram syntactically valid (yes/no) |
+| `C4C` | External systems consistent between context and container diagrams (yes/no) |
+| `SRS` | SRS headings and FR-x/NFR-x/C-x IDs present (yes/no) |
+| `Pass` | Overall pass — all checks above passed |
+| `Cost$` | Estimated USD cost of that run |
+
+After the table, the script prints an interpretation block showing the percentage-point difference between average pipeline and average baseline on the three primary metrics. This is the evidence you cite directly in your report.
+
+**Saved outputs:**
+- `data/runs/comparison_report.json` — full structured report, machine-readable
+- `data/runs/comparison_report.csv` — same data as a spreadsheet for thesis appendices
+
+---
+
+## Execution Flow (Baseline)
+
+```
+Terminal command
+      │
+      ▼
+Docker spins up container
+      │
+      ▼
+baseline_single_shot.py starts
+      │
+      ▼
+Reads .env → API key, model, cost limits
+      │
+      ▼
+dataset_loader.py reads stakeholder_transcript.md
+      │
+      ▼
+Prompt template loaded, transcript injected
+      │
+      ▼
+Single API call to OpenAI
+      │
+      ▼
+Response parsed: SRS block + Mermaid block extracted
+      │
+      ▼
+srs_spec_validator.py checks heading and ID structure
+      │
+      ▼
+phase5_evaluator.py scores recall, precision, C4, contradictions
+      │
+      ▼
+All files written to data/runs/baseline_TIMESTAMP/
+      │
+      ▼
+One line appended to run_registry.jsonl
+```
+
+# Baseline runs (no critique.md, so contradiction catch will always be 0)
+docker compose run --rm app python -m src.pipeline.evaluate_run data/runs/baseline_20260613_122123
 
 
-FLOW
-
-Your terminal command
-      ↓
-Docker spins up a container
-      ↓
-Python runs baseline_single_shot.py
-      ↓
-Reads .env for secrets and config
-      ↓
-dataset_loader.py reads the hospital transcript from data/golden/
-      ↓
-baseline_single_shot_prompt.txt is loaded and transcript is injected into it
-      ↓
-Full prompt is sent to OpenAI API
-      ↓
-Model returns SRS text + Mermaid text
-      ↓
-Text is parsed and split into separate pieces
-      ↓
-srs_spec_validator.py checks the SRS structure
-      ↓
-All files are saved into data/runs/baseline_TIMESTAMP/
-      ↓
-run_registry.jsonl gets one new line appended
+# Comparison command
+docker compose run --rm app python -m src.pipeline.compare_runs
