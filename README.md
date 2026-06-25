@@ -156,8 +156,30 @@ Requirement-Synthesis/
 
 ### Prerequisites
 
-- Docker Desktop must be open and running (green icon in system tray).
-- A `.env` file must exist at the project root with your OpenAI API key.
+1. **Clone the repository**
+
+   ```powershell
+   git clone <repo-url>
+   cd Requirement-Synthesis
+   ```
+
+2. **Install Docker Desktop** — download from https://www.docker.com/products/docker-desktop and install it. Once installed, open it and wait until the engine is running (green icon in the system tray). Docker must be running before any command below will work.
+
+3. **Get an OpenAI API key** — create an account at https://platform.openai.com, add credit to your account (a few dollars is enough), then create a key at https://platform.openai.com/api-keys. Without credit on the account, all API calls will fail with a billing error.
+
+4. **Create your `.env` file** — the `.env` file is never committed to the repository (it is in `.gitignore`), so you must create it yourself. Copy the provided template:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+   Then open `.env` and replace `your-openai-api-key-here` with your key. Every person who runs the project uses their own key and pays for their own API usage — the key is never shared.
+
+5. **Build the Docker image** — only needed once (or after changing `requirements.txt`):
+
+   ```powershell
+   docker compose build
+   ```
 
 ### Available Commands
 
@@ -176,7 +198,6 @@ docker compose run --rm app python -m src.pipeline.baseline_single_shot
 **Multi-agent pipeline run** — runs the 3-agent LangGraph pipeline.
 
 ```powershell
-docker compose build
 docker compose run --rm app python -m src.pipeline.multi_agent_pipeline
 ```
 

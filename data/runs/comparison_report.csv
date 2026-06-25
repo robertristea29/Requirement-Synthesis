@@ -1,10 +1,10 @@
 run_id,phase,date,model,cost_usd,recall,precision,contradiction_catch,context_valid,container_valid,c4_consistent,srs_structure,overall_pass
 baseline_20260612_132427,baseline,2026-06-12,gpt-5.4-mini,0.00665475,,,,,,,,
 baseline_20260612_132532,baseline,2026-06-12,gpt-5.4-mini,0.00587625,,,,,,,,
-baseline_20260612_132617,baseline,2026-06-12,gpt-5.4-mini,0.006655,,,,,,,,
+baseline_20260612_132617,baseline,2026-06-12,gpt-5.4-mini,0.006655,0.0,0.0,0.0,False,False,False,False,False
 baseline_20260612_132644,baseline,2026-06-12,gpt-5.4-mini,0.00787425,0.4,0.1333,0.0,False,True,False,False,False
 baseline_20260613_122123,baseline,2026-06-13,gpt-5.4-mini,0.00877875,0.6,0.28,0.0,True,True,True,True,True
 pipeline_20260622_182633,pipeline,2026-06-22,gpt-5.4-mini,0.013506,1.0,0.625,0.5,True,False,False,True,False
-pipeline_20260622_185345,pipeline,2026-06-22,gpt-5.4-mini,0.013680000000000001,,,,,,,,
+pipeline_20260622_185345,pipeline,2026-06-22,gpt-5.4-mini,0.013680000000000001,1.0,0.5556,0.5,True,False,False,True,False
 pipeline_20260624_131555,pipeline,2026-06-24,gpt-5.4-mini,0.01784175,0.6,0.3462,0.5,True,True,True,True,True
 pipeline_20260624_164625,pipeline,2026-06-24,gpt-5.4-mini,0.01689075,1.0,0.5769,0.5,True,True,False,True,False
